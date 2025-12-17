@@ -296,7 +296,7 @@
         let currentUser = null;
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
-        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        // const googleLoginBtn = document.getElementById('googleLoginBtn');
         const emailLoginBtn = document.getElementById('emailLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const loginError = document.getElementById('loginError');
@@ -304,16 +304,16 @@
         const loadingSpinner = document.getElementById('loadingSpinner');
         const bookingsList = document.getElementById('bookingsList');
         const searchInput = document.getElementById('searchInput');
-        googleLoginBtn.addEventListener('click', async () => {
-            try {
-                googleLoginBtn.disabled = true;
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                loginError.textContent = error.message;
-                loginError.style.display = 'block';
-                googleLoginBtn.disabled = false;
-            }
-        });
+        // googleLoginBtn.addEventListener('click', async () => {
+        //     try {
+        //         googleLoginBtn.disabled = true;
+        //         await signInWithPopup(auth, provider);
+        //     } catch (error) {
+        //         loginError.textContent = error.message;
+        //         loginError.style.display = 'block';
+        //         googleLoginBtn.disabled = false;
+        //     }
+        // });
         emailLoginBtn.addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value;
             const password = document.getElementById('passwordInput').value;
