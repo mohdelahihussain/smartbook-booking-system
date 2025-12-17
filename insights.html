@@ -167,8 +167,8 @@
                 <p>Email: staff@techvista.com</p>
                 <p>Password: demo123</p>
             </div>
-            <button id="googleLoginBtn" class="login-btn">Sign in with Google</button>
-            <div class="divider">OR</div>
+            <!-- <button id="googleLoginBtn" class="login-btn">Sign in with Google</button>
+            <div class="divider">OR</div> -->
             <input type="email" id="emailInput" class="login-input" placeholder="Email address">
             <input type="password" id="passwordInput" class="login-input" placeholder="Password">
             <button id="emailLoginBtn" class="login-btn">Sign in with Email</button>
@@ -357,7 +357,7 @@
 
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
-        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        // const googleLoginBtn = document.getElementById('googleLoginBtn');
         const emailLoginBtn = document.getElementById('emailLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const loginError = document.getElementById('loginError');
@@ -366,15 +366,15 @@
         const lastUpdate = document.getElementById('lastUpdate');
 
         // Authentication handlers
-        googleLoginBtn.addEventListener('click', async () => {
-            try {
-                googleLoginBtn.disabled = true;
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                loginError.textContent = error.message;
-                googleLoginBtn.disabled = false;
-            }
-        });
+        // googleLoginBtn.addEventListener('click', async () => {
+        //     try {
+        //         googleLoginBtn.disabled = true;
+        //         await signInWithPopup(auth, provider);
+        //     } catch (error) {
+        //         loginError.textContent = error.message;
+        //         googleLoginBtn.disabled = false;
+        //     }
+        // });
 
         emailLoginBtn.addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value;
