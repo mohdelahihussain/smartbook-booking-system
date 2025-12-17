@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBook - Conference Room Booking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #ffffff; color: #1c1917; overflow-x: hidden; }
+        
+        nav { position: fixed; top: 0; width: 100%; padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border-bottom: 1px solid #e7e5e4; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .logo { font-size: 28px; font-weight: 700; color: #2563eb; display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 6px; }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { color: #57534e; text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-links a:hover { color: #2563eb; }
+        
+        .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 50px 50px;
+    position: relative;
+    overflow: hidden;
+
+    /* Background image + gradient overlay */
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37, 99, 235, 0.85) 0%,
+            rgba(29, 78, 216, 0.85) 100%
+        ),
+        url("background.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+        .hero::before { content: ''; position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius: 50%; top: -200px; right: -200px; }
+        .hero::after { content: ''; position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%; bottom: -150px; left: -150px; }
+        .hero-content { text-align: center; max-width: 1000px; color: white; position: relative; z-index: 1; }
+        .hero h1 { font-size: 56px; font-weight: 700; margin-bottom: 24px; line-height: 1.2; }
+        .hero p { font-size: 20px; opacity: 0.95; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px; border: none; cursor: pointer; }
+        .btn-primary { background: white; color: #2563eb; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+        .btn-secondary { background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.4); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+        
+        .features { padding: 100px 50px; background: rgb(255, 255, 255); }
+        .section-header { text-align: center; max-width: 700px; margin: 0 auto 60px; }
+        .section-header h2 { font-size: 42px; font-weight: 700; color: #1c1917; margin-bottom: 16px; }
+        .section-header p { font-size: 18px; color: #57534e; line-height: 1.6; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; max-width: 1200px; margin: 0 auto; }
+        .feature-card { background: #fafaf9; border: 1px solid #e7e5e4; border-radius: 12px; padding: 36px; transition: all 0.3s; position: relative; overflow: hidden; }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%); transform: scaleX(0); transition: transform 0.3s; }
+        .feature-card:hover::before { transform: scaleX(1); }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); border-color: #2563eb; }
+        .feature-icon { width: 56px; height: 56px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 12px; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+        .feature-icon svg { width: 28px; height: 28px; fill: white; }
+        .feature-card h3 { font-size: 22px; margin-bottom: 12px; color: #1c1917; font-weight: 600; }
+        .feature-card p { color: #57534e; line-height: 1.7; font-size: 15px; }
+        
+        .stats {
+    padding: 120px 50px;
+    background: #fafaf9;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+.section-header h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #0f172a;
+}
+
+.section-header p {
+    font-size: 16px;
+    color: #57534e;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 36px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.stat-item {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 24px;
+    text-align: center;
+    border: 1px solid #e7e5e4;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.stat-number {
+    font-size: 44px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #57534e;
+}
+        
+        footer { padding: 48px 50px; text-align: center; background: rgb(12, 53, 114); border-top: 1px solid #e7e5e4; }
+        footer p { color: #fdfdfd; font-size: 14px; line-height: 1.8; }
+        
+        @media (max-width: 768px) {
+            nav { padding: 20px; }
+            .nav-links { display: none; }
+            .hero { padding: 80px 20px 50px; }
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 16px; }
+            .features, .stats { padding: 60px 20px; }
+            .section-header h2 { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            SmartBook
+        </div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="public.html">Book Now</a>
+            <a href="staff.html">Staff Login</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Smart Conference Room Booking</h1>
+        <p>
+            Streamline your meeting room reservations with our intelligent cloud-based booking system.
+            Real-time availability, instant approvals, and powerful analytics.
+        </p>
+        <div class="hero-buttons">
+            <a href="public.html" class="btn btn-primary">Book a Room</a>
+            <a href="staff.html" class="btn btn-secondary">Staff Dashboard</a>
+            <a href="insights.html" class="btn btn-secondary">View Insights</a>
+        </div>
+    </div>
+</section>
+
+    <section id="features" class="features">
+        <div class="section-header">
+            <h2>Powerful Features</h2>
+            <p>Everything you need to manage conference room bookings efficiently</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/></svg>
+                </div>
+                <h3>Instant Booking</h3>
+                <p>Submit booking requests in seconds with our intuitive form. Real-time validation ensures error-free submissions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                </div>
+                <h3>Real-Time Updates</h3>
+                <p>See changes instantly across all devices. No refresh needed. Stay synchronized with automatic updates.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                </div>
+                <h3>Secure Access</h3>
+                <p>Protected staff dashboard with Firebase authentication. Role-based access control for administrators.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                </div>
+                <h3>Analytics Dashboard</h3>
+                <p>Track utilization, approval rates, and trends. Make data-driven decisions about your facilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+                </div>
+                <h3>Mobile Friendly</h3>
+                <p>Book rooms on the go. Fully responsive design works seamlessly on all devices.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4c-1.48 0-2.85.43-4.01 1.17l1.46 1.46C10.21 6.23 11.08 6 12 6c3.04 0 5.5 2.46 5.5 5.5v.5H19c1.66 0 3 1.34 3 3 0 1.13-.64 2.11-1.56 2.62l1.45 1.45C23.16 18.16 24 16.68 24 15c0-2.64-2.05-4.78-4.65-4.96zM3 5.27l2.75 2.74C2.56 8.15 0 10.77 0 14c0 3.31 2.69 6 6 6h11.73l2 2L21 20.73 4.27 4 3 5.27zM7.73 10l8 8H6c-2.21 0-4-1.79-4-4s1.79-4 4-4h1.73z"/></svg>
+                </div>
+                <h3>Cloud-Powered</h3>
+                <p>Built on Google Firebase for reliability, scalability, and zero maintenance.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="section-header">
+            <h2>Built for Performance</h2>
+            <p>Trusted by organizations for seamless room management</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Cloud-Based</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">Real-Time</div>
+                <div class="stat-label">Synchronization</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">Instant</div>
+                <div class="stat-label">Approvals</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Availability</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 SmartBook Conference Room Booking System. Built with Firebase & GitHub Pages.</p>
+        <p style="margin-top: 10px; font-size: 12px; color: #ffffff;">National College of Ireland - Doing Business on the Cloud Project</p>
+    </footer>
+</body>
+</html>

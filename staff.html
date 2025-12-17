@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - SmartBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+        
+        /* Login Screen */
+        .login-screen { display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); position: relative; overflow: hidden; }
+        .login-screen::before { content: ''; position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius: 50%; top: -250px; right: -250px; }
+        .login-box { background: white; border-radius: 24px; padding: 48px; max-width: 460px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); position: relative; z-index: 1; }
+        .login-header { text-align: center; margin-bottom: 32px; }
+        .login-icon { width: 64px; height: 64px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 16px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
+        .login-icon svg { width: 32px; height: 32px; fill: white; }
+        .login-box h1 { font-size: 28px; color: #1e293b; margin-bottom: 8px; font-weight: 700; }
+        .login-box p { color: #64748b; font-size: 15px; }
+        .login-info { background: #f1f5f9; border-left: 4px solid #2563eb; padding: 16px 20px; margin-bottom: 28px; border-radius: 8px; }
+        .login-info p { font-size: 13px; color: #475569; margin: 4px 0; line-height: 1.6; }
+        .login-info strong { color: #1e293b; font-weight: 600; }
+        .login-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        .login-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.4); }
+        .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .divider { text-align: center; margin: 24px 0; color: #94a3b8; font-size: 13px; position: relative; }
+        .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: #e2e8f0; }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+        .login-input { width: 100%; padding: 14px 16px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; color: #1e293b; font-size: 14px; margin-bottom: 12px; transition: all 0.3s; }
+        .login-input:focus { outline: none; border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
+        .error-msg { color: #ef4444; font-size: 13px; margin-top: 12px; padding: 12px; background: #fee2e2; border-radius: 8px; text-align: center; }
+        
+        /* Dashboard */
+        .dashboard { display: none; }
+        .dashboard.active { display: block; }
+        
+        /* Sidebar Navigation */
+        .sidebar { position: fixed; left: 0; top: 0; width: 260px; height: 100vh; background: white; border-right: 1px solid #e2e8f0; padding: 24px 0; z-index: 100; }
+        .sidebar-logo { padding: 0 24px 24px; border-bottom: 1px solid #e2e8f0; }
+        .logo { font-size: 24px; font-weight: 700; color: #2563eb; display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 8px; }
+        .nav-menu { margin-top: 24px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: #64748b; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.3s; }
+        .nav-item.active, .nav-item:hover { background: #f1f5f9; color: #2563eb; }
+        .nav-icon { width: 20px; height: 20px; }
+        
+        /* Main Content */
+        .main-content { margin-left: 260px; min-height: 100vh; background: #f8fafc; }
+        
+        /* Top Bar */
+        .top-bar { background: white; border-bottom: 1px solid #e2e8f0; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+        .page-title { font-size: 24px; font-weight: 700; color: #1e293b; }
+        .user-section { display: flex; align-items: center; gap: 16px; }
+        .user-info { text-align: right; }
+        .user-name { font-size: 14px; font-weight: 600; color: #1e293b; }
+        .user-email { font-size: 12px; color: #64748b; }
+        .logout-btn { padding: 10px 20px; background: #f1f5f9; border: none; border-radius: 8px; color: #475569; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .logout-btn:hover { background: #e2e8f0; color: #1e293b; }
+        
+        /* Content Area */
+        .content-area { padding: 32px; }
+        
+        /* Stats Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .stat-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; transition: all 0.3s; position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%); }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+        .stat-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px; }
+        .stat-label { font-size: 13px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .stat-icon svg { width: 20px; height: 20px; fill: #2563eb; }
+        .stat-number { font-size: 36px; font-weight: 700; color: #1e293b; }
+        .stat-card.pending .stat-number { color: #f59e0b; }
+        .stat-card.approved .stat-number { color: #10b981; }
+        .stat-card.rejected .stat-number { color: #ef4444; }
+        
+        /* Filter Bar */
+        .filter-bar { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+        .filter-tabs { display: flex; gap: 8px; flex: 1; }
+        .filter-btn { padding: 10px 20px; background: transparent; border: none; border-radius: 8px; color: #64748b; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .filter-btn.active { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        .filter-btn:hover:not(.active) { background: #f1f5f9; color: #1e293b; }
+        .search-box { flex: 1; min-width: 250px; max-width: 400px; position: relative; }
+        .search-input { width: 100%; padding: 10px 16px 10px 40px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; color: #1e293b; font-size: 14px; transition: all 0.3s; }
+        .search-input:focus { outline: none; border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; fill: #94a3b8; }
+        
+        /* Bookings List */
+        .bookings-container { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; }
+        .booking-card { background: #fafaf9; border: 2px solid #e7e5e4; border-radius: 12px; padding: 24px; margin-bottom: 16px; transition: all 0.3s; }
+        .booking-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+        .booking-card.pending { border-left: 6px solid #f59e0b; }
+        .booking-card.approved { border-left: 6px solid #10b981; }
+        .booking-card.rejected { border-left: 6px solid #ef4444; }
+        .booking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .booking-id { font-size: 12px; color: #94a3b8; font-family: 'Courier New', monospace; font-weight: 600; }
+        .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-badge.pending { background: #fef3c7; color: #d97706; }
+        .status-badge.approved { background: #d1fae5; color: #059669; }
+        .status-badge.rejected { background: #fee2e2; color: #dc2626; }
+        .booking-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .detail-item { }
+        .detail-label { font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-value { color: #1e293b; font-size: 14px; font-weight: 500; }
+        .booking-purpose { margin-top: 16px; padding-top: 16px; border-top: 1px solid #e7e5e4; }
+        .booking-purpose .detail-label { margin-bottom: 8px; }
+        .booking-purpose p { color: #475569; font-size: 14px; line-height: 1.6; }
+        .booking-actions { display: flex; gap: 12px; margin-top: 20px; }
+        .action-btn { flex: 1; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s; }
+        .approve-btn { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+        .approve-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+        .reject-btn { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+        .reject-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(239,68,68,0.4); }
+        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .notes-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e7e5e4; }
+        .notes-textarea { width: 100%; padding: 12px 16px; background: white; border: 2px solid #e2e8f0; border-radius: 10px; color: #1e293b; font-size: 13px; font-family: inherit; min-height: 80px; resize: vertical; transition: all 0.3s; }
+        .notes-textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
+        .save-notes-btn { padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: all 0.3s; }
+        .save-notes-btn:hover { background: #1d4ed8; }
+        .processed-info { margin-top: 12px; font-size: 12px; color: #64748b; padding: 12px; background: #f8fafc; border-radius: 8px; }
+        .empty-state { text-align: center; padding: 80px 20px; color: #94a3b8; }
+        .empty-state svg { width: 80px; height: 80px; margin-bottom: 16px; fill: #cbd5e1; }
+        .empty-state h3 { font-size: 18px; color: #64748b; margin-bottom: 8px; }
+        .loading { text-align: center; padding: 60px 20px; }
+        .spinner { border: 4px solid #e2e8f0; border-top: 4px solid #2563eb; border-radius: 50%; width: 48px; height: 48px; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .message { padding: 16px 20px; border-radius: 12px; margin-bottom: 24px; font-size: 14px; font-weight: 500; animation: slideDown 0.3s; }
+        .message.success { background: #d1fae5; border: 2px solid #6ee7b7; color: #065f46; }
+        .message.error { background: #fee2e2; border: 2px solid #fca5a5; color: #991b1b; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .filter-bar { flex-direction: column; }
+            .filter-tabs, .search-box { width: 100%; }
+            .booking-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-icon">
+                    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                </div>
+                <h1>Staff Login</h1>
+                <p>Access the administrative dashboard</p>
+            </div>
+            <div class="login-info">
+                <p><strong>Demo Credentials:</strong></p>
+                <p>Email: staff@techvista.com</p>
+                <p>Password: demo123</p>
+            </div>
+            <button id="googleLoginBtn" class="login-btn">Sign in with Google</button>
+            <div class="divider">OR</div>
+            <input type="email" id="emailInput" class="login-input" placeholder="Email address">
+            <input type="password" id="passwordInput" class="login-input" placeholder="Password">
+            <button id="emailLoginBtn" class="login-btn">Sign in with Email</button>
+            <div id="loginError" class="error-msg" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo">
+                    <div class="logo-icon"></div>
+                    SmartBook
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                    Dashboard
+                </a>
+                <a href="insights.html" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                    Analytics
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <h1 class="page-title">Booking Management</h1>
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-name">Staff User</div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div id="messageBox"></div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-label">Total Bookings</div>
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="totalCount">0</div>
+                    </div>
+                    <div class="stat-card pending">
+                        <div class="stat-header">
+                            <div class="stat-label">Pending Review</div>
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="pendingCount">0</div>
+                    </div>
+                    <div class="stat-card approved">
+                        <div class="stat-header">
+                            <div class="stat-label">Approved</div>
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="approvedCount">0</div>
+                    </div>
+                    <div class="stat-card rejected">
+                        <div class="stat-header">
+                            <div class="stat-label">Rejected</div>
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="rejectedCount">0</div>
+                    </div>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">All Bookings</button>
+                        <button class="filter-btn" data-filter="Pending">Pending</button>
+                        <button class="filter-btn" data-filter="Approved">Approved</button>
+                        <button class="filter-btn" data-filter="Rejected">Rejected</button>
+                    </div>
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search by name or ID...">
+                    </div>
+                </div>
+
+                <!-- Bookings Container -->
+                <div class="bookings-container">
+                    <div id="loadingSpinner" class="loading">
+                        <div class="spinner"></div>
+                        <p style="color: #64748b;">Loading bookings...</p>
+                    </div>
+                    <div id="bookingsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithPopup, signInWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, query, onSnapshot, doc, updateDoc, serverTimestamp, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpgkK3a800X4zeKGZEdlbEf6G8nzemUJ8",
+            authDomain: "smartbook-booking-system.firebaseapp.com",
+            projectId: "smartbook-booking-system",
+            storageBucket: "smartbook-booking-system.firebasestorage.app",
+            messagingSenderId: "476695047912",
+            appId: "1:476695047912:web:a0973769c568547610a35d"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+        let allBookings = [];
+        let currentFilter = 'all';
+        let currentUser = null;
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const emailLoginBtn = document.getElementById('emailLoginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginError = document.getElementById('loginError');
+        const messageBox = document.getElementById('messageBox');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const bookingsList = document.getElementById('bookingsList');
+        const searchInput = document.getElementById('searchInput');
+        googleLoginBtn.addEventListener('click', async () => {
+            try {
+                googleLoginBtn.disabled = true;
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                loginError.textContent = error.message;
+                loginError.style.display = 'block';
+                googleLoginBtn.disabled = false;
+            }
+        });
+        emailLoginBtn.addEventListener('click', async () => {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            if (!email || !password) {
+                loginError.textContent = 'Please enter email and password';
+                loginError.style.display = 'block';
+                return;
+            }
+            try {
+                emailLoginBtn.disabled = true;
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                loginError.textContent = error.message;
+                loginError.style.display = 'block';
+                emailLoginBtn.disabled = false;
+            }
+        });
+        logoutBtn.addEventListener('click', () => signOut(auth));
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                loginScreen.style.display = 'none';
+                dashboard.classList.add('active');
+                document.getElementById('userEmail').textContent = user.email;
+                loadBookings();
+            } else {
+                loginScreen.style.display = 'flex';
+                dashboard.classList.remove('active');
+            }
+        });
+        function showMessage(msg, type) {
+            messageBox.innerHTML = `<div class="message ${type}">${msg}</div>`;
+            setTimeout(() => messageBox.innerHTML = '', 5000);
+        }
+        function formatDate(timestamp) {
+            if (!timestamp) return 'N/A';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleString('en-IE', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+        function loadBookings() {
+            loadingSpinner.style.display = 'block';
+            const q = query(collection(db, 'bookings'), orderBy('submittedAt', 'desc'));
+            onSnapshot(q, (snapshot) => {
+                allBookings = [];
+                snapshot.forEach(doc => allBookings.push({ id: doc.id, ...doc.data() }));
+                updateStats();
+                displayBookings();
+                loadingSpinner.style.display = 'none';
+            }, (error) => {
+                showMessage('Error loading bookings: ' + error.message, 'error');
+                loadingSpinner.style.display = 'none';
+            });
+        }
+        function updateStats() {
+            document.getElementById('totalCount').textContent = allBookings.length;
+            document.getElementById('pendingCount').textContent = allBookings.filter(b => b.status === 'Pending').length;
+            document.getElementById('approvedCount').textContent = allBookings.filter(b => b.status === 'Approved').length;
+            document.getElementById('rejectedCount').textContent = allBookings.filter(b => b.status === 'Rejected').length;
+        }
+        function displayBookings() {
+            const searchTerm = searchInput.value.toLowerCase();
+            let filtered = currentFilter === 'all' ? allBookings : allBookings.filter(b => b.status === currentFilter);
+            if (searchTerm) filtered = filtered.filter(b => b.requesterName.toLowerCase().includes(searchTerm) || b.id.toLowerCase().includes(searchTerm));
+            if (filtered.length === 0) {
+                bookingsList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg><h3>No bookings found</h3><p>Try adjusting your filters</p></div>';
+                return;
+            }
+            bookingsList.innerHTML = filtered.map(b => `
+                <div class="booking-card ${b.status.toLowerCase()}">
+                    <div class="booking-header">
+                        <span class="booking-id">${b.id.substring(0,8).toUpperCase()}</span>
+                        <span class="status-badge ${b.status.toLowerCase()}">${b.status}</span>
+                    </div>
+                    <div class="booking-details">
+                        <div class="detail-item"><div class="detail-label">Name</div><div class="detail-value">${b.requesterName}</div></div>
+                        <div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${b.requesterEmail}</div></div>
+                        <div class="detail-item"><div class="detail-label">Date</div><div class="detail-value">${b.bookingDate}</div></div>
+                        <div class="detail-item"><div class="detail-label">Time</div><div class="detail-value">${b.startTime} - ${b.endTime}</div></div>
+                        <div class="detail-item"><div class="detail-label">Room</div><div class="detail-value">${b.roomName}</div></div>
+                        <div class="detail-item"><div class="detail-label">Attendees</div><div class="detail-value">${b.attendees} people</div></div>
+                    </div>
+                    <div class="booking-purpose"><div class="detail-label">Purpose</div><p>${b.purpose}</p></div>
+                    ${b.status === 'Pending' ? `
+                        <div class="booking-actions">
+                            <button class="action-btn approve-btn" onclick="approveBooking('${b.id}')">Approve Booking</button>
+                            <button class="action-btn reject-btn" onclick="rejectBooking('${b.id}')">Reject Booking</button>
+                        </div>
+                    ` : `<div class="processed-info">Processed by: ${b.processedBy || 'N/A'} at ${formatDate(b.lastModified)}</div>`}
+                    <div class="notes-section">
+                        <div class="detail-label">Internal Notes</div>
+                        <textarea id="notes-${b.id}" class="notes-textarea" placeholder="Add internal notes...">${b.internalNotes || ''}</textarea>
+                        <button class="save-notes-btn" onclick="saveNotes('${b.id}')">Save Notes</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        window.approveBooking = async (id) => {
+            if (!confirm('Approve this booking?')) return;
+            try {
+                await updateDoc(doc(db, 'bookings', id), { status: 'Approved', processedBy: currentUser.email, lastModified: serverTimestamp() });
+                showMessage('Booking approved successfully!', 'success');
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        };
+        window.rejectBooking = async (id) => {
+            if (!confirm('Reject this booking?')) return;
+            try {
+                await updateDoc(doc(db, 'bookings', id), { status: 'Rejected', processedBy: currentUser.email, lastModified: serverTimestamp() });
+                showMessage('Booking rejected.', 'success');
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        };
+        window.saveNotes = async (id) => {
+            const notes = document.getElementById(`notes-${id}`).value;
+            try {
+                await updateDoc(doc(db, 'bookings', id), { internalNotes: notes, lastModified: serverTimestamp() });
+                showMessage('Notes saved successfully!', 'success');
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        };
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                displayBookings();
+            });
+        });
+        searchInput.addEventListener('input', displayBookings);
+    </script>
+</body>
+</html>
